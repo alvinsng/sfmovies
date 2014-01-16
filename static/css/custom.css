@@ -1,9 +1,8 @@
 #map-canvas {
-	height: 100%;
+	height: calc(100% - 50px);
 	width: 100%;
 	position: absolute;
-	top: 0;
-	left: 0;
+	top: 50px;
 }
 
 .infoBox h3 {
@@ -27,6 +26,14 @@
 	padding: 0px 10px;
 	font-size: 14px;
 	line-height: 30px;
+}
+
+#github {
+	position: absolute;
+	z-index: 1001;
+	top: 0;
+	left: 0;
+	border: 0;
 }
 
 html, body {
