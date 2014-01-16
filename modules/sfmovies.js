@@ -1,4 +1,7 @@
 var http = require('http');
+var fs = require('fs');
+
+var cacheFile = __dirname + '/../cache/locations.data';
 
 /**
  * Simple helper method to fetch the data in full and return
@@ -16,7 +19,7 @@ function fetchJSON(url, callback) {
 }
 
 var locations = {};
-
+var cache = {};
 
 function buildRows(data) {
 	var rows = [];
@@ -33,19 +36,68 @@ function buildRows(data) {
 	return rows;
 }
 
-function locationLookup(location, callback) {
-	var query = encodeURIComponent(location + ' , San Francisco, CA, USA');
-	fetchJSON('http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=' + query, function(res) {
-		if (!res.results) {
-			console.log('Unable to find geo location for ' + location);
-		} else {
-			for (var i in res.results) {
-				locations[location] = res.results[i].geometry.location;
-				break; 
+function locationLookup(location, offset, callback) {
+	setTimeout(function() {
+		console.log('looking up '+location);
+		var query = encodeURIComponent(location + ' , San Francisco, CA, USA');
+		fetchJSON('http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=' + query, function(res) {
+			if (!res.results) {
+				console.log('Unable to find geo location for ' + location);
+			} else {
+				for (var i in res.results) {
+					locations[location] = res.results[i].geometry.location;
+					var line = location + '|' + locations[location].lat + '|' + locations[location].lng;
+					fs.appendFile(cacheFile, line + '\n', function (err) {
+						if (err) {
+							console.log(err);
+						}
+					});
+					break; 
+				}
+			}
+			
+			if (res.status != 'OK') {
+				console.log(res.status);
+			}
+	
+			callback();
+		});
+	}, 1001 * offset);
+}
+
+function fetchData(callback) {
+	fetchJSON('http://data.sfgov.org/resource/yitu-d5am.json', function(data) {
+		for (var i in data) {
+			var row = data[i];
+			if (!row.locations) {
+				continue;
+			}
+			
+			if (cache[row.locations]) {
+				locations[row.locations] = cache[row.locations];
+			} else {
+				locations[row.locations] = false;
 			}
 		}
 
-		callback();
+		var locationCount = 0;
+		var i = 0;
+		var totalLocations = 0;
+		for (var location in locations) {
+			if (locations[location]) {
+				continue;
+			}
+			
+			totalLocations++;
+			locationLookup(location, i, function() {
+				locationCount++;
+				console.log('Fetched location ' + locationCount + '/' + totalLocations);
+				if (locationCount >= totalLocations) {
+					callback(buildRows(data));
+				}
+			});
+			i++;
+		}
 	});
 }
 
@@ -56,24 +108,14 @@ function locationLookup(location, callback) {
  */
 exports.init = function(callback) {
 	console.log('Loading data');
-	fetchJSON('http://data.sfgov.org/resource/yitu-d5am.json', function(data) {
-		for (var i in data) {
-			var row = data[i];
-			if (!row.locations) {
-				continue;
-			}
-			locations[row.locations] = false;
+	fs.readFile(cacheFile, 'utf-8', function(err, data) {
+		var lines = data.split('\n');
+		for (var i in lines) {
+			var line = lines[i];
+			var cols = line.split('|');
+			cache[cols[0]] = {lat: cols[1], lng: cols[2]};
 		}
-
-		var locationCount = 0;
-		var totalLocations = Object.keys(locations).length;
-		for (var location in locations) {
-			locationLookup(location, function() {
-				locationCount++;
-				if (locationCount >= totalLocations) {
-					callback(buildRows(data));
-				}
-			});
-		}
+		
+		fetchData(callback);
 	});
 };
