@@ -1,0 +1,10 @@
+{
+  "name": "sfmovies",
+  "description": "A node.js web app that list movies filmed in SF",
+  "author": "Alvin Sng <admin@alvinsng.com>",
+  "dependencies": {
+    "socket.io": "0.x",
+    "express": "3.x"
+  },
+  "engine": "node >= 0.10.24"
+}

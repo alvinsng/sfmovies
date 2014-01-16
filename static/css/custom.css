@@ -1,0 +1,35 @@
+#map-canvas {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.infoBox h3 {
+	font-size: 18px;
+}
+
+.infoBox ul li {
+	list-style-type: none;
+}
+
+.infoBox ul {
+	padding-left: 15px;
+}
+
+.navbar-form input {
+	width: 400px;
+}
+
+.navbar-form .form-info {
+	display: inline-block;
+	padding: 0px 10px;
+	font-size: 14px;
+	line-height: 30px;
+}
+
+html, body {
+	height: 100%;
+	font-size: 12px;
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SF movies</title>
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/custom.css" rel="stylesheet" />
+  </head>
+  <body>
+    <a href="https://github.com/alvinsng"><img style="position: absolute; z-index: 1001; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png" alt="Fork me on GitHub"></a>
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">SF Movies</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right" role="form">
+            <div class="form-group">
+              <input id="search" type="text" placeholder="Search Movies" class="form-control">
+            </div>
+            <div class="form-info">
+              <span id="result_count">...</span> Movies Found
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+    <div id="map-canvas"></div>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXQCShckSTG4-n2j1tA9Kn13gKbbBZOGw&sensor=false"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/custom.js"></script>
+  </body>
+</html>
